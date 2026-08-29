@@ -1,0 +1,9 @@
+{
+  "label": "Visualizer",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "title": "Visualizer",
+    "description": "How the core 3D visualizer is built: architecture, files, and decisions."
+  }
+}
