@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Scene JSON matches src/types/scene.ts. Coach mouse and CV jobs write the same document.
+model Play {
+  id          String   @id @default(uuid())
+  teamId      String   @map("team_id")
+  title       String
+  description String   @default("")
+  status      String   @default("draft")
+  tags        String[] @default([])
+  scene       Json
+  createdById String   @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([teamId])
+  @@map("plays")
+}
+
+model FilmJob {
+  id          String   @id @default(uuid())
+  teamId      String   @map("team_id")
+  playId      String?  @map("play_id")
+  status      String   @default("queued")
+  sourceUrl   String   @map("source_url")
+  result      Json?
+  error       String?
+  createdById String   @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([teamId])
+  @@map("film_jobs")
+}

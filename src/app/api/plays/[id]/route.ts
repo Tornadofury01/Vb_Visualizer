@@ -2,6 +2,7 @@ import { requireUser } from "@/lib/auth-request";
 import { handleRouteError, json } from "@/lib/http";
 import { updatePlaySchema } from "@/lib/validators";
 import { deletePlay, getPlay, updatePlay } from "@/services/play-service";
+import type { Play } from "@/types/domain";
 
 export const runtime = "nodejs";
 
@@ -22,7 +23,12 @@ export async function PATCH(req: Request, ctx: Ctx) {
     const user = await requireUser();
     const { id } = await ctx.params;
     const body = updatePlaySchema.parse(await req.json());
-    return json({ play: updatePlay(user.id, id, body) });
+    return json({
+      play: updatePlay(user.id, id, {
+        ...body,
+        scene: body.scene as Play["scene"],
+      }),
+    });
   } catch (err) {
     return handleRouteError(err);
   }

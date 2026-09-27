@@ -1,3 +1,4 @@
+import { Providers } from "@/components/providers";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -14,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "VB Visualizer",
-  description: "Volleyball play authoring backend",
+  description: "Design volleyball plays on a 2D court and watch them in 3D",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -23,7 +24,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex h-full min-h-full flex-col">{children}</body>
+      <body className="flex h-full min-h-full flex-col">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

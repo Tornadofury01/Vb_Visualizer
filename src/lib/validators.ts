@@ -47,6 +47,7 @@ export const updatePlaySchema = z.object({
   status: z.enum(["draft", "published"]).optional(),
   tags: z.array(z.string()).optional(),
   thumbnailUrl: z.string().url().nullable().optional(),
+  scene: z.unknown().optional(),
 });
 
 export const createSceneSchema = z.object({

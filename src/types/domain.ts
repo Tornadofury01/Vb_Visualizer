@@ -68,6 +68,8 @@ export type Play = {
   createdById: string;
   createdAt: string;
   updatedAt: string;
+  /** Canonical Scene document shared by 2D, 3D, and future CV. */
+  scene?: import("@/types/scene").Scene;
 };
 
 export type CameraSettings = {

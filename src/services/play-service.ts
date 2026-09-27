@@ -1,8 +1,10 @@
 import { db, newId, nowIso } from "@/data/store";
 import { requireMembership, requireWriteAccess } from "@/lib/access";
 import { AppError } from "@/lib/errors";
+import { createDefaultScene } from "@/scene/defaults";
 import { getSceneGraph } from "@/services/scene-service";
 import type { Play, PlayDetail, PlayStatus } from "@/types/domain";
+import type { Scene } from "@/types/scene";
 
 export function listPlays(userId: string, teamId?: string): Play[] {
   const state = db.read();
@@ -34,6 +36,7 @@ export function createPlay(
       createdById: userId,
       createdAt: now,
       updatedAt: now,
+      scene: createDefaultScene(input.title.trim()),
     };
     state.plays.push(play);
     const sceneId = newId();
@@ -74,6 +77,7 @@ export function getPlay(userId: string, playId: string): PlayDetail {
   const scenes = db.read().scenes.filter((s) => s.playId === playId);
   return {
     ...play,
+    scene: play.scene ?? createDefaultScene(play.title),
     scenes: scenes.map((scene) => getSceneGraph(scene.id)),
   };
 }
@@ -81,7 +85,7 @@ export function getPlay(userId: string, playId: string): PlayDetail {
 export function updatePlay(
   userId: string,
   playId: string,
-  patch: Partial<Pick<Play, "title" | "description" | "status" | "tags" | "thumbnailUrl">>,
+  patch: Partial<Pick<Play, "title" | "description" | "status" | "tags" | "thumbnailUrl" | "scene">>,
 ): Play {
   const existing = findPlayOrThrow(playId);
   requireWriteAccess(existing.teamId, userId);
@@ -93,6 +97,7 @@ export function updatePlay(
     if (patch.status !== undefined) play.status = patch.status as PlayStatus;
     if (patch.tags !== undefined) play.tags = patch.tags;
     if (patch.thumbnailUrl !== undefined) play.thumbnailUrl = patch.thumbnailUrl;
+    if (patch.scene !== undefined) play.scene = patch.scene as Scene;
     play.updatedAt = nowIso();
     return play;
   });
